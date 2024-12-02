@@ -79,6 +79,37 @@ label var fail75 "Death"
 replace time = time +0.5
 export excel using "$res/Tables.xlsx", sheet("F1_atrisk") sheetreplace firstrow(varlabels)
 
+/*update on 02/12/2024 for final submission*/
+use npci, clear
+drop survivor std lb ub
+replace time = time +0.5 if time > 0
+preserve
+drop at_risk
+reshape wide fail, i(incomequintile2015 cancer2ndgrp) j(time)
+tempfile fail
+save `fail', replace
+restore
+
+preserve
+drop fail
+rename at_risk fail
+reshape wide fail, i(incomequintile2015 cancer2ndgrp) j(time)
+bysort incomequintile2015: keep if _n == 1
+replace cancer2nd = 0
+tempfile at_risk
+save `at_risk', replace
+restore
+use `fail', clear
+append using `at_risk'
+label define out 0 "Number at risk", modify
+sort incomequintile2015 cancer2ndgrp
+label variable fail0 "0.5"
+forvalues i = 1(1)18 {
+	label variable fail`i' "`i'"
+}
+export excel using "$res/Tables.xlsx", sheet("F1_atrisk_new") sheetreplace firstrow(varlabels)
+
+
 import excel "$res/Tables.xlsx", sheet(F1_npci_1) clear 
 renames A B C D E F G \ SES at ObsTime CumInc UCI LCI Outcome
 destring SES, replace

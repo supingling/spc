@@ -485,7 +485,7 @@ replace cancer2nd_grp = 4 if site>=30 & site<=39
 replace cancer2nd_grp = 5 if cancer2nd == 1 & cancer2nd_grp == .
 replace cancer2nd_grp = 6 if cancer2nd == 2
 replace cancer2nd_grp = 0 if cancer2nd == 0
-label define out2 0 "Censored" 1 "Second breast cancer" 2 "Second cancer female genital organs" ///
+label define out3 0 "Censored" 1 "Second breast cancer" 2 "Second cancer female genital organs" ///
 3 "Second cancer of digestive organs" 4 "Second cancer of respiratory and intrathoracic organs" ///
 5 "Other second cancers" 6 "Dead", modify
 label values cancer2nd_grp out2

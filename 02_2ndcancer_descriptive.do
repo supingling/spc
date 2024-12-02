@@ -149,7 +149,7 @@ forvalues i = 1(1)5 {
 	replace cancer2nd_grp`i' = 2 if cancer2nd_grp > 0 & cancer2nd_grp!= `i'
 	stset time, f(cancer2nd_grp`i' == 1) id(pseudo_patientid)
 	*sts list, risktable(0.5(1)17.5) by(incomequintile2015) atrisk0 saving(`npci`j'', replace)
-	stcompet spcgroup`i' = ci grp`i'_high = hi grp`i'_low = lo, compet1(2) by(incomequintile2015)
+	stcompet spcgroup`i' = ci /*grp`i'_high = hi grp`i'_low = lo*/, compet1(2) by(incomequintile2015)
 
 }
 
@@ -203,6 +203,61 @@ xlabel(0(1)20, ang(45) labsize(small)) ///
 xtitle("Time primary breast cancer diagnosis, Years", size(small)) ///
 ylabel(0(0.01)0.04, labsize(small) ang(h) format(%4.2f)) ///
 ytitle("Cummulative incidence", size(small)) name(specific2, replace)
+
+foreach var of varlist spcgroup* {
+	replace `var' = `var'*100
+}
+twoway ///
+(line spcgroup1 _t if cancer2nd_grp == 1 & incomequintile2015 == 1, connect(step) sort lcolor("255 175 204")) ///
+(line spcgroup5 _t if cancer2nd_grp == 5 & incomequintile2015 == 1, connect(step) sort lcolor("255 191 105")) ///
+(line spcgroup1 _t if cancer2nd_grp == 1 & incomequintile2015 == 5, connect(step) sort lpattern(dash)  lcolor("255 175 204")) ///
+(line spcgroup5 _t if cancer2nd_grp == 5 & incomequintile2015 == 5, connect(step) sort lpattern(dash)  lcolor("255 191 105")) ///
+/*(rarea high2 low2 _t if cancer2nd_grp == 1 & incomequintile2015 == 1, lcolor(none) sort fcolor("196 255 249")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 2 & incomequintile2015 == 1, lcolor(none) sort fcolor("156 234 239")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 3 & incomequintile2015 == 1, lcolor(none) sort fcolor("104 216 214")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 4 & incomequintile2015 == 1, lcolor(none) sort fcolor("61 204 199")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 5 & incomequintile2015 == 1, lcolor(none) sort fcolor("7 190 184")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 1 & incomequintile2015 == 5, lcolor(none) sort fcolor("255 227 224")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 2 & incomequintile2015 == 5, lcolor(none) sort fcolor("251 195 188")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 3 & incomequintile2015 == 5, lcolor(none) sort fcolor("247 163 153")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 4 & incomequintile2015 == 5, lcolor(none) sort fcolor("243 131 117")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 5 & incomequintile2015 == 5, lcolor(none) sort fcolor("239 99 81")) ///
+*/, legend(order(1 "Breast cancer - The least deprived" 2 "Other cancers - The least deprived" ///
+3 "The most deprived" 4 "The most deprived") ///
+size(small) cols(2) colfirst pos(11) ring(0)) ///
+xlabel(0(1)20, ang(45) labsize(small)) ///
+xtitle("Time primary breast cancer diagnosis, Years", size(small)) ///
+ylabel(0(1)4, labsize(small) ang(h) format(%4.0f)) ///
+ytitle("Probability, %", size(small)) name(specific11, replace)
+
+twoway ///
+(line spcgroup2 _t if cancer2nd_grp == 2 & incomequintile2015 == 1, connect(step) sort lcolor("88 129 87")) ///
+(line spcgroup3 _t if cancer2nd_grp == 3 & incomequintile2015 == 1, connect(step) sort lcolor("0 255 84")) ///
+(line spcgroup4 _t if cancer2nd_grp == 4 & incomequintile2015 == 1, connect(step) sort lcolor("181 23 158")) ///
+(line spcgroup2 _t if cancer2nd_grp == 2 & incomequintile2015 == 5, connect(step) sort lpattern(dash)  lcolor("88 129 87")) ///
+(line spcgroup3 _t if cancer2nd_grp == 3 & incomequintile2015 == 5, connect(step) sort lpattern(dash)  lcolor("0 255 84")) ///
+(line spcgroup4 _t if cancer2nd_grp == 4 & incomequintile2015 == 5, connect(step) sort lpattern(dash)  lcolor("181 23 158")) ///
+/*(rarea high2 low2 _t if cancer2nd_grp == 1 & incomequintile2015 == 1, lcolor(none) sort fcolor("196 255 249")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 2 & incomequintile2015 == 1, lcolor(none) sort fcolor("156 234 239")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 3 & incomequintile2015 == 1, lcolor(none) sort fcolor("104 216 214")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 4 & incomequintile2015 == 1, lcolor(none) sort fcolor("61 204 199")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 5 & incomequintile2015 == 1, lcolor(none) sort fcolor("7 190 184")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 1 & incomequintile2015 == 5, lcolor(none) sort fcolor("255 227 224")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 2 & incomequintile2015 == 5, lcolor(none) sort fcolor("251 195 188")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 3 & incomequintile2015 == 5, lcolor(none) sort fcolor("247 163 153")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 4 & incomequintile2015 == 5, lcolor(none) sort fcolor("243 131 117")) ///
+(rarea high2 low2 _t if cancer2nd_grp == 5 & incomequintile2015 == 5, lcolor(none) sort fcolor("239 99 81")) ///
+*/, legend(order(1 "Cancer of female genital organs - The least deprived" ///
+2 "Cancer of digestive organs - The least deprived" 3 "Cancer of respiratory and intrathoracic organs - The least deprived" ///
+4 "The most deprived" ///
+5 "The most deprived" 6 "The most deprived") ///
+size(small) cols(2) colfirst pos(11) ring(0)) ///
+xlabel(0(1)20, ang(45) labsize(small)) ///
+xtitle("Time primary breast cancer diagnosis, Years", size(small)) ///
+ylabel(0(1)4, labsize(small) ang(h) format(%4.0f)) ///
+ytitle("Probability, %", size(small)) name(specific22, replace)
+graph combine specific22 specific11, rows(1) xsize(11.75) ysize(5)
+graph export "C:\Users\lshsl7\OneDrive - London School of Hygiene and Tropical Medicine\Breast_2ndcancer_RG\UICC\specific.svg", as(svg) name("Graph") replace
 
 graph combine all specific2 specific1, rows(1) xsize(11.75) ysize(5)
 graph export "$res/F1.svg", as(svg) replace
